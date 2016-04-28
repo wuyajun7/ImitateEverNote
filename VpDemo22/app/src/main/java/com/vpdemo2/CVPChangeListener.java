@@ -7,22 +7,21 @@ import android.widget.LinearLayout;
 
 /**
  * Created by peterwu on 16/4/27.
- * <p/>
+ * <p>
  * ViewPager 监听
  */
 public class CVPChangeListener implements ViewPager.OnPageChangeListener {
 
     private ArgbEvaluator mEvaluator;
     private int[] mColors;
-    private LinearLayout mSuperLayout;
     private CDotView[] mDotViews;
     private int mCurSelected = 0;
 
+    private IBgColorListener iBgColorListener;
 
-    public CVPChangeListener(int[] mColors, LinearLayout mSuperLayout, CDotView[] mDotViews, int mCurSelected) {
+    public CVPChangeListener(int[] mColors, CDotView[] mDotViews, int mCurSelected) {
         this.mEvaluator = new ArgbEvaluator();
         this.mColors = mColors;
-        this.mSuperLayout = mSuperLayout;
         this.mDotViews = mDotViews;
         this.mCurSelected = mCurSelected;
     }
@@ -55,9 +54,10 @@ public class CVPChangeListener implements ViewPager.OnPageChangeListener {
      * @param secColor
      */
     private void setSuperBgColor(float positionOffset, ArgbEvaluator evaluator, int curColor, int secColor) {
-        mSuperLayout.setBackgroundColor(curColor);
         int evaluate = (Integer) evaluator.evaluate(positionOffset, curColor, secColor);
-        mSuperLayout.setBackgroundColor(evaluate);
+        if (iBgColorListener != null) {
+            iBgColorListener.callBack(evaluate);
+        }
     }
 
     /**
@@ -129,4 +129,7 @@ public class CVPChangeListener implements ViewPager.OnPageChangeListener {
         }
     }
 
+    public void setColorListener(IBgColorListener iBgColorListener) {
+        this.iBgColorListener = iBgColorListener;
+    }
 }
